@@ -1,5 +1,5 @@
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:controller="sample.Controller"
+<Pane fx:controller="emulator.Controller"
           xmlns:fx="http://javafx.com/fxml">
 </Pane>

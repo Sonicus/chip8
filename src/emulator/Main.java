@@ -1,4 +1,4 @@
-package sample;
+package emulator;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Pane root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Pane root = FXMLLoader.load(getClass().getResource("emulator.fxml"));
         primaryStage.setTitle("Chip8");
         primaryStage.setScene(new Scene(root, 64, 32));
         primaryStage.setResizable(false);

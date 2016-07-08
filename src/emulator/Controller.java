@@ -1,4 +1,4 @@
-package sample;
+package emulator;
 
 public class Controller {
 }
