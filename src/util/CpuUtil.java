@@ -14,4 +14,8 @@ public final class CpuUtil {
         nibbles[0] = (byte) (s >> 12 & 0x000F);
         return nibbles;
     }
+
+    public static byte byteFromNibbles(byte n1, byte n2) {
+        return (byte) (n1 << 4 | n2);
+    }
 }
