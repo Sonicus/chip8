@@ -35,10 +35,11 @@ class CPU {
         byte[] opcodeNibbles = CpuUtil.nibblesFromShort(opcodeShort);
 
         switch (opcodeNibbles[0]) {
-            case 0xA:
-                LDI(CpuUtil.addressFromNibbles(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]));
             case 0x6:
                 LD(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
+                break;
+            case 0xA:
+                LDI(CpuUtil.addressFromNibbles(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]));
                 break;
             default:
                 throw new RuntimeException("Unknown opcode " + String.format("%04X", opcodeShort));
