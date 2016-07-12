@@ -3,6 +3,7 @@ package emulator;
 
 import util.CpuUtil;
 
+import java.util.Arrays;
 import java.util.Stack;
 
 class CPU {
@@ -24,15 +25,16 @@ class CPU {
 
     void executeCycle() throws Exception {
         cycleNumber++;
-        if(PC + 1 > mem.length-1){
+        if (PC + 1 > mem.length - 1) {
             throw new RuntimeException("PC outside memory range");
         }
         short opCodeShort = CpuUtil.shortFromBytes(mem[PC], mem[PC + 1]);
         System.out.println("Current opcode is " + String.format("%04X", opCodeShort) + " (cycle " + cycleNumber + ")");
         byte[] opCodeNibbles = CpuUtil.nibblesFromShort(opCodeShort);
 
-        switch(opCodeNibbles[0]) {
+        switch (opCodeNibbles[0]) {
             case 0x6:
+                LD(opCodeNibbles[1], CpuUtil.byteFromNibbles(opCodeNibbles[2], opCodeNibbles[3]));
                 break;
             default:
                 throw new RuntimeException("Unknown OpCode " + String.format("%04X", opCodeShort));
@@ -41,11 +43,16 @@ class CPU {
         PC += 2;
     }
 
-    public long getCycleNumber() {
+    //6XNN
+    private void LD(byte targetRegister, byte value) {
+        reg[targetRegister] = value;
+    }
+
+    long getCycleNumber() {
         return cycleNumber;
     }
 
-    public short getPC(){
+    short getPC() {
         return PC;
     }
 
