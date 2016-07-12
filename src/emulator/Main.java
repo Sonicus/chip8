@@ -1,12 +1,17 @@
 package emulator;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import util.RomUtil;
+
+import java.util.Optional;
 
 public class Main extends Application {
 
@@ -29,13 +34,15 @@ public class Main extends Application {
         } catch (Exception e) {
             System.out.println("Couldn't initialize emulator");
             e.printStackTrace();
+            showAlert("Couldn't initialize emulator", e, Optional.empty(), Optional.empty());
         }
 
         try {
             run();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Execution halted unexpectedly");
             e.printStackTrace();
+            showAlert("Execution halted unexpectedly", e, Optional.of(cpu.getPC()), Optional.of(cpu.getCycleNumber()));
         }
     }
 
@@ -56,10 +63,27 @@ public class Main extends Application {
         renderer = new Renderer(cpu, canvas);
     }
 
-    private void run() throws Exception{
+    private void run() throws Exception {
         System.out.println("\nExecution started:\n------------------");
-        while(true){
+        while (true) {
             cpu.executeCycle();
+        }
+    }
+
+    private void showAlert(String message, Exception e, Optional<Short> PC, Optional<Long> cycleNumber) {
+        Alert alert;
+        if (PC.isPresent() && cycleNumber.isPresent()) {
+            alert = new Alert(Alert.AlertType.ERROR, message + "\n" + e.getMessage() +
+                    "\nPC: " + String.format("%04X", PC.get()) +
+                    "\nCycle number: " + cycleNumber.get());
+        } else {
+            alert = new Alert(Alert.AlertType.ERROR, message + "\n" + e.getMessage());
+        }
+
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.YES) {
+            Platform.exit();
         }
     }
 
