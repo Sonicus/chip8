@@ -18,4 +18,8 @@ public final class CpuUtil {
     public static byte byteFromNibbles(byte n1, byte n2) {
         return (byte) (n1 << 4 | n2);
     }
+
+    public static short addressFromNibbles(byte n1, byte n2, byte n3) {
+        return (short) (n1 << 8 | n2 << 4 | n3);
+    }
 }

@@ -10,6 +10,7 @@ class CPU {
     private long cycleNumber;
     private short PC;
     private Stack<Short> SP;
+    private short I;
     private byte[] reg = new byte[16];
     private byte[] mem = new byte[4096];
     private byte[] vMem = new byte[64 * 32];
@@ -18,6 +19,8 @@ class CPU {
     CPU(byte[] romData) {
         System.arraycopy(romData, 0, mem, 0x200, romData.length);
         PC = 0x200;
+        I = 0;
+        SP = new Stack<>();
         cycleNumber = 0;
         drawFlag = false;
     }
@@ -32,6 +35,8 @@ class CPU {
         byte[] opcodeNibbles = CpuUtil.nibblesFromShort(opcodeShort);
 
         switch (opcodeNibbles[0]) {
+            case 0xA:
+                LDI(CpuUtil.addressFromNibbles(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]));
             case 0x6:
                 LD(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
                 break;
@@ -40,6 +45,11 @@ class CPU {
         }
 
         PC += 2;
+    }
+
+    //ANNN
+    private void LDI(short address) {
+        I = address;
     }
 
     //6XNN
