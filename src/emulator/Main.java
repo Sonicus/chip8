@@ -82,7 +82,7 @@ public class Main extends Application {
 
         alert.showAndWait();
 
-        if (alert.getResult() == ButtonType.YES) {
+        if (alert.getResult() == ButtonType.OK) {
             Platform.exit();
         }
     }
