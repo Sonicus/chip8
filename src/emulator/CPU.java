@@ -13,11 +13,12 @@ class CPU {
     private short I;
     private byte[] reg = new byte[16];
     private byte[] mem = new byte[4096];
-    private byte[] vMem = new byte[64 * 32];
+    private int[][] vMem = new int[64][32];
     private boolean drawFlag;
 
     CPU(byte[] romData) {
         System.arraycopy(romData, 0, mem, 0x200, romData.length);
+        initializeFont();
         PC = 0x200;
         I = 0;
         SP = new Stack<>();
@@ -35,11 +36,17 @@ class CPU {
         byte[] opcodeNibbles = CpuUtil.nibblesFromShort(opcodeShort);
 
         switch (opcodeNibbles[0]) {
+            case 0x2:
+                CALL(CpuUtil.addressFromNibbles(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]));
+                break;
             case 0x6:
                 LD(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
                 break;
             case 0xA:
                 LDI(CpuUtil.addressFromNibbles(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]));
+                break;
+            case 0xD:
+                DRW(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]);
                 break;
             default:
                 throw new RuntimeException("Unknown opcode " + String.format("%04X", opcodeShort));
@@ -48,14 +55,59 @@ class CPU {
         PC += 2;
     }
 
-    //ANNN
-    private void LDI(short address) {
-        I = address;
+    //2NNN
+    private void CALL(short address){
+        SP.push(PC);
+        PC = address;
     }
 
     //6XNN
     private void LD(byte targetRegister, byte value) {
         reg[targetRegister] = value;
+    }
+
+    //ANNN
+    private void LDI(short address) {
+        I = address;
+    }
+
+    //DXYN
+    private void DRW(byte x, byte y, byte n) {
+        byte collisionFlag = 0x00;
+        for (int j = 0; j < n; j++) {
+            int screenYPos = (j + y) % 32;
+            for (int i = 0; i < 8; i++) {
+                int screenXPos = (x + i) % 64;
+                if (vMem[screenXPos][screenYPos] == 1 && ((mem[I + j] >> (7 - i)) & 0b00000001) == 1) {
+                    collisionFlag = 0x01;
+                }
+                vMem[screenXPos][screenYPos] = vMem[screenXPos][screenYPos] ^ (mem[I + j] >> i & 1);
+            }
+        }
+        reg[0xF] = collisionFlag;
+        drawFlag = true;
+    }
+
+    private void initializeFont() {
+        byte[] font = {
+                (byte) 0xF0, (byte) 0x90, (byte) 0x90, (byte) 0x90, (byte) 0xF0, //0
+                (byte) 0x20, (byte) 0x60, (byte) 0x20, (byte) 0x20, (byte) 0x70, //1
+                (byte) 0xF0, (byte) 0x10, (byte) 0xF0, (byte) 0x80, (byte) 0xF0, //2
+                (byte) 0xF0, (byte) 0x10, (byte) 0xF0, (byte) 0x10, (byte) 0xF0, //3
+                (byte) 0x90, (byte) 0x90, (byte) 0xF0, (byte) 0x10, (byte) 0x10, //4
+                (byte) 0xF0, (byte) 0x80, (byte) 0xF0, (byte) 0x10, (byte) 0xF0, //5
+                (byte) 0xF0, (byte) 0x80, (byte) 0xF0, (byte) 0x90, (byte) 0xF0, //6
+                (byte) 0xF0, (byte) 0x10, (byte) 0x20, (byte) 0x40, (byte) 0x40, //7
+                (byte) 0xF0, (byte) 0x90, (byte) 0xF0, (byte) 0x90, (byte) 0xF0, //8
+                (byte) 0xF0, (byte) 0x90, (byte) 0xF0, (byte) 0x10, (byte) 0xF0, //9
+                (byte) 0xF0, (byte) 0x90, (byte) 0xF0, (byte) 0x90, (byte) 0x90, //A
+                (byte) 0xE0, (byte) 0x90, (byte) 0xE0, (byte) 0x90, (byte) 0xE0, //B
+                (byte) 0xF0, (byte) 0x80, (byte) 0x80, (byte) 0x80, (byte) 0xF0, //C
+                (byte) 0xE0, (byte) 0x90, (byte) 0x90, (byte) 0x90, (byte) 0xE0, //D
+                (byte) 0xF0, (byte) 0x80, (byte) 0xF0, (byte) 0x80, (byte) 0xF0, //E
+                (byte) 0xF0, (byte) 0x80, (byte) 0xF0, (byte) 0x80, (byte) 0x80  //F
+        };
+        System.arraycopy(font, 0, mem, 0, font.length);
     }
 
     long getCycleNumber() {
@@ -66,7 +118,7 @@ class CPU {
         return PC;
     }
 
-    public byte[] getvMem() {
+    public int[][] getvMem() {
         return vMem;
     }
 
