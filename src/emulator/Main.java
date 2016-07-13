@@ -8,6 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import util.RomUtil;
 
@@ -18,16 +19,20 @@ public class Main extends Application {
     private byte[] romData;
     private CPU cpu;
     private Renderer renderer;
+    private int scale = 7;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         Pane root = FXMLLoader.load(getClass().getResource("emulator.fxml"));
-        Canvas canvas = new Canvas(64, 32);
+        Canvas canvas = new Canvas(64 * scale, 32 * scale);
         primaryStage.setTitle("Chip8");
-        primaryStage.setScene(new Scene(root, 64, 32));
+        primaryStage.setScene(new Scene(root, 64 * scale, 32 * scale));
         root.getChildren().add(canvas);
         primaryStage.setResizable(false);
+        primaryStage.sizeToScene();
         primaryStage.show();
+        canvas.getGraphicsContext2D().setFill(Color.BLACK);
+        canvas.getGraphicsContext2D().fillRect(0,0, canvas.getWidth(), canvas.getHeight());
 
         try {
             initialize(canvas);
@@ -60,13 +65,16 @@ public class Main extends Application {
         }
 
         cpu = new CPU(romData);
-        renderer = new Renderer(cpu, canvas);
+        renderer = new Renderer(cpu, canvas.getGraphicsContext2D(), scale);
     }
 
     private void run() throws Exception {
         System.out.println("\nExecution started:\n------------------");
         while (true) {
             cpu.executeCycle();
+            if (cpu.isDrawFlag()) {
+                renderer.updateCanvas();
+            }
         }
     }
 
