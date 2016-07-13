@@ -32,7 +32,7 @@ public class Main extends Application {
         primaryStage.sizeToScene();
         primaryStage.show();
         canvas.getGraphicsContext2D().setFill(Color.BLACK);
-        canvas.getGraphicsContext2D().fillRect(0,0, canvas.getWidth(), canvas.getHeight());
+        canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         try {
             initialize(canvas);

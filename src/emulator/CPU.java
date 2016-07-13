@@ -9,7 +9,7 @@ class CPU {
 
     private long cycleNumber;
     private short PC;
-    private Stack<Short> SP;
+    private Stack<Short> STACK;
     private short I;
     private byte[] reg = new byte[16];
     private byte[] mem = new byte[4096];
@@ -21,7 +21,7 @@ class CPU {
         initializeFont();
         PC = 0x200;
         I = 0;
-        SP = new Stack<>();
+        STACK = new Stack<>();
         cycleNumber = 0;
         drawFlag = false;
     }
@@ -56,8 +56,8 @@ class CPU {
     }
 
     //2NNN
-    private void CALL(short address){
-        SP.push(PC);
+    private void CALL(short address) {
+        STACK.push(PC);
         PC = address;
     }
 
