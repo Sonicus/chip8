@@ -39,7 +39,7 @@ public class Main extends Application {
         } catch (Exception e) {
             System.out.println("Couldn't initialize emulator");
             e.printStackTrace();
-            showAlert("Couldn't initialize emulator", e, Optional.empty(), Optional.empty());
+            showAlert("Couldn't initialize emulator\n"+e.getClass(), e, Optional.empty(), Optional.empty());
         }
 
         try {
