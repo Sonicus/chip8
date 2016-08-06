@@ -48,6 +48,13 @@ class CPU {
             case 0xD:
                 DRW(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]);
                 break;
+            case 0xF:
+                switch (opcodeNibbles[2]) {
+                    case 0x3:
+                        LDB(opcodeNibbles[1]);
+                        break;
+                }
+                break;
             default:
                 throw new RuntimeException("Unknown opcode " + String.format("%04X", opcodeShort));
         }
@@ -86,6 +93,15 @@ class CPU {
         }
         reg[0xF] = collisionFlag;
         drawFlag = true;
+    }
+
+    private void LDB(byte sourceRegister) {
+        if (I + 2 > mem.length) {
+            throw new RuntimeException("I value outside of memory range");
+        }
+        mem[I] = (byte) (reg[sourceRegister] / 100);
+        mem[I + 1] = (byte) ((reg[sourceRegister] % 100) / 10);
+        mem[I + 2] = (byte) (reg[sourceRegister] % 10);
     }
 
     private void initializeFont() {
