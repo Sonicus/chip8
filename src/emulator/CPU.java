@@ -179,7 +179,9 @@ class CPU {
     }
 
     //DXYN
-    private void DRW(byte x, byte y, byte n) {
+    private void DRW(byte xSource, byte ySource, byte n) {
+        byte x = reg[xSource];
+        byte y = reg[ySource];
         byte collisionFlag = 0x00;
         for (int j = 0; j < n; j++) {
             int screenYPos = (j + y) % 32;
