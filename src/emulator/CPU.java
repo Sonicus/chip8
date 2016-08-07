@@ -3,6 +3,7 @@ package emulator;
 
 import util.CpuUtil;
 
+import java.util.Random;
 import java.util.Stack;
 import java.util.stream.IntStream;
 
@@ -20,6 +21,7 @@ class CPU {
     private byte[] mem = new byte[4096];
     private int[][] vMem = new int[64][32];
     private boolean drawFlag;
+    private Random random = new Random();
 
     CPU(byte[] romData) {
         System.arraycopy(romData, 0, mem, 0x200, romData.length);
@@ -84,6 +86,9 @@ class CPU {
                 break;
             case 0xA:
                 LDI(CpuUtil.addressFromNibbles(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]));
+                break;
+            case 0xC:
+                RND(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
                 break;
             case 0xD:
                 DRW(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]);
@@ -177,6 +182,11 @@ class CPU {
     //ANNN
     private void LDI(short address) {
         I = address;
+    }
+
+    //CXNN
+    private void RND(byte targetRegister, byte value) {
+        reg[targetRegister] = (byte) random.nextInt(value + 1);
     }
 
     //DXYN
