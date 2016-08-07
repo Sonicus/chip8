@@ -146,6 +146,7 @@ class CPU {
     private void CALL(short address) {
         STACK.push(PC);
         PC = address;
+        PC -= 2;
     }
 
     //3XNN
