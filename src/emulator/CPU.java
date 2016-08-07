@@ -14,7 +14,7 @@ class CPU {
     private short I;
     private byte DT = 0x0;
     private byte ST = 0x0;
-    private double timerRefreshRate = 1000000000 / 60;
+    private double timerRefreshRate = 1000000000.0 / 60;
     private long timerTickTime = 0;
     private byte[] reg = new byte[16];
     private byte[] mem = new byte[4096];
@@ -40,8 +40,8 @@ class CPU {
 
         cycleNumber++;
         if (System.nanoTime() > timerTickTime + timerRefreshRate) {
-            DT = (byte) (Math.max(0, DT--));
-            ST = (byte) (Math.max(0, ST--));
+            DT = (byte) (Math.max(0, --DT));
+            ST = (byte) (Math.max(0, --ST));
             timerTickTime = System.nanoTime();
         }
         if (PC + 1 >= mem.length) {
@@ -131,6 +131,7 @@ class CPU {
             throw new RuntimeException("Tried to return from a subroutine but the stack is empty");
         }
         PC = STACK.pop();
+        PC -= 2;
         if (PC < 0) {
             throw new RuntimeException("Stack underflow");
         }
@@ -151,7 +152,7 @@ class CPU {
 
     //3XNN
     private void SE_N(byte sourceRegister, byte value) {
-        if (mem[sourceRegister] == value) {
+        if (reg[sourceRegister] == value) {
             PC += 2;
         }
     }
