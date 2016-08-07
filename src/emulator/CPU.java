@@ -12,6 +12,10 @@ class CPU {
     private short PC;
     private Stack<Short> STACK;
     private short I;
+    private byte DT = 0x0;
+    private byte ST = 0x0;
+    private double timerRefreshRate = 1000000000.0 / 60;
+    private long timerTickTime = 0;
     private byte[] reg = new byte[16];
     private byte[] mem = new byte[4096];
     private int[][] vMem = new int[64][32];
@@ -28,7 +32,18 @@ class CPU {
     }
 
     void executeCycle() throws Exception {
+
+        //TODO! Make the system refresh rate adjustable. For now use the same as the DT and ST
+        if (System.nanoTime() < timerTickTime + timerRefreshRate) {
+            return;
+        }
+
         cycleNumber++;
+        if (System.nanoTime() > timerTickTime + timerRefreshRate) {
+            DT = (byte) (Math.max(0, DT--));
+            ST = (byte) (Math.max(0, ST--));
+            timerTickTime = System.nanoTime();
+        }
         if (PC + 1 >= mem.length) {
             throw new RuntimeException("PC outside memory range");
         }
@@ -72,6 +87,9 @@ class CPU {
                 break;
             case 0xF:
                 switch (CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3])) {
+                    case 0x15:
+                        LDDT(opcodeNibbles[1]);
+                        break;
                     case 0x29:
                         LDF(opcodeNibbles[1]);
                         break;
@@ -162,6 +180,11 @@ class CPU {
         }
         reg[0xF] = collisionFlag;
         drawFlag = true;
+    }
+
+    //FX15
+    private void LDDT(byte sourceRegister) {
+        DT = reg[sourceRegister];
     }
 
     //FX29
