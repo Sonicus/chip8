@@ -37,15 +37,23 @@ class CPU {
 
         switch (opcodeNibbles[0]) {
             case 0x0:
-                if (opcodeNibbles[1] == 0x0 && opcodeNibbles[2] == 0xE && opcodeNibbles[3] == 0xE) {
-                    RET();
+                switch (CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3])) {
+                    case (byte) 0xEE:
+                        RET();
+                        break;
+                    default:
+                        unknownOpcode(opcodeShort);
                 }
+                break;
+            case 0x1:
+                JMP(CpuUtil.addressFromNibbles(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]));
                 break;
             case 0x2:
                 CALL(CpuUtil.addressFromNibbles(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]));
                 break;
             case 0x3:
                 SE_N(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
+                break;
             case 0x6:
                 LD(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
                 break;
@@ -62,17 +70,23 @@ class CPU {
                 DRW(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]);
                 break;
             case 0xF:
-                switch (opcodeNibbles[2]) {
-                    case 0x3:
+                switch (CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3])) {
+                    case 0x33:
                         LDB(opcodeNibbles[1]);
                         break;
+                    default:
+                        unknownOpcode(opcodeShort);
                 }
                 break;
             default:
-                throw new RuntimeException("Unknown opcode " + String.format("%04X", opcodeShort));
+                unknownOpcode(opcodeShort);
         }
 
         PC += 2;
+    }
+
+    private void unknownOpcode(short opcodeShort) {
+        throw new RuntimeException("Unknown opcode " + String.format("%04X", opcodeShort));
     }
 
     //00EE
@@ -84,6 +98,11 @@ class CPU {
         if (PC < 0) {
             throw new RuntimeException("Stack underflow");
         }
+    }
+
+    //1NNN
+    private void JMP(short address) {
+        PC = address;
     }
 
     //2NNN
