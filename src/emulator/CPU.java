@@ -163,7 +163,7 @@ class CPU {
 
     //7XNN
     private void ADD_N(byte targetRegister, byte value) {
-        mem[targetRegister] = (byte) ((mem[targetRegister] + value) % 256);
+        reg[targetRegister] = (byte) ((reg[targetRegister] + value) % 256);
     }
 
     //9XY0
