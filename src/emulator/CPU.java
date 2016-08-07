@@ -14,7 +14,7 @@ class CPU {
     private short I;
     private byte DT = 0x0;
     private byte ST = 0x0;
-    private double timerRefreshRate = 1000000000.0 / 60;
+    private double timerRefreshRate = 1000000000 / 60;
     private long timerTickTime = 0;
     private byte[] reg = new byte[16];
     private byte[] mem = new byte[4096];
@@ -87,6 +87,9 @@ class CPU {
                 break;
             case 0xF:
                 switch (CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3])) {
+                    case 0x07:
+                        LDRDT(opcodeNibbles[1]);
+                        break;
                     case 0x15:
                         LDDT(opcodeNibbles[1]);
                         break;
@@ -180,6 +183,11 @@ class CPU {
         }
         reg[0xF] = collisionFlag;
         drawFlag = true;
+    }
+
+    //FX07
+    private void LDRDT(byte targetRegister) {
+        reg[targetRegister] = DT;
     }
 
     //FX15
