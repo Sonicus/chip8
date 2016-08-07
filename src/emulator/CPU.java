@@ -36,6 +36,10 @@ class CPU {
         byte[] opcodeNibbles = CpuUtil.nibblesFromShort(opcodeShort);
 
         switch (opcodeNibbles[0]) {
+            case 0x0:
+                if (opcodeNibbles[1] == 0x0 && opcodeNibbles[2] == 0xE && opcodeNibbles[3] == 0xE) {
+                    RET();
+                }
             case 0x2:
                 CALL(CpuUtil.addressFromNibbles(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]));
                 break;
@@ -63,6 +67,17 @@ class CPU {
         }
 
         PC += 2;
+    }
+
+    //00EE
+    private void RET() {
+        if (STACK.empty()) {
+            throw new RuntimeException("Tried to return from a subroutine but the stack is empty");
+        }
+        PC = STACK.pop();
+        if (PC < 0) {
+            throw new RuntimeException("Stack underflow");
+        }
     }
 
     //2NNN
