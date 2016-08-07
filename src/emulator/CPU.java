@@ -40,6 +40,7 @@ class CPU {
                 if (opcodeNibbles[1] == 0x0 && opcodeNibbles[2] == 0xE && opcodeNibbles[3] == 0xE) {
                     RET();
                 }
+                break;
             case 0x2:
                 CALL(CpuUtil.addressFromNibbles(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]));
                 break;
@@ -48,6 +49,9 @@ class CPU {
                 break;
             case 0x7:
                 ADDN(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
+                break;
+            case 0x9:
+                SNE(opcodeNibbles[1], opcodeNibbles[2]);
                 break;
             case 0xA:
                 LDI(CpuUtil.addressFromNibbles(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]));
@@ -94,6 +98,13 @@ class CPU {
     //7XNN
     private void ADDN(byte targetRegister, byte value) {
         mem[targetRegister] = (byte) ((mem[targetRegister] + value) % 256);
+    }
+
+    //9XY0
+    private void SNE(byte regX, byte regY) {
+        if (mem[regX] == mem[regY]) {
+            PC += 2;
+        }
     }
 
     //ANNN
