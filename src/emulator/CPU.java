@@ -29,7 +29,7 @@ class CPU {
 
     void executeCycle() throws Exception {
         cycleNumber++;
-        if (PC + 1 > mem.length - 1) {
+        if (PC + 1 >= mem.length) {
             throw new RuntimeException("PC outside memory range");
         }
         short opcodeShort = CpuUtil.shortFromBytes(mem[PC], mem[PC + 1]);
@@ -163,8 +163,8 @@ class CPU {
 
     //FX33
     private void LDB(byte sourceRegister) {
-        if (I + 2 > mem.length) {
-            throw new RuntimeException("I value outside of memory range");
+        if (I + 2 >= mem.length) {
+            segfault();
         }
         mem[I] = (byte) (reg[sourceRegister] / 100);
         mem[I + 1] = (byte) ((reg[sourceRegister] % 100) / 10);
@@ -174,10 +174,14 @@ class CPU {
     //FX65
     private void LDR(byte targetRegister) {
         if (I + targetRegister >= mem.length) {
-            throw new RuntimeException("I value outside of memory range");
+            segfault();
         }
         IntStream.rangeClosed(0, targetRegister).forEach(index -> reg[index] = mem[I + index]);
         I = (short) (I + targetRegister + 1);
+    }
+
+    private void segfault() {
+        throw new RuntimeException("Segmentation fault! I: " + String.format("%04X", I) + " Memory length: " + mem.length);
     }
 
     private void initializeFont() {
