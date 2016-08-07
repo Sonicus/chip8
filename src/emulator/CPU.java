@@ -102,7 +102,7 @@ class CPU {
 
     //9XY0
     private void SNE(byte regX, byte regY) {
-        if (mem[regX] == mem[regY]) {
+        if (mem[regX] != mem[regY]) {
             PC += 2;
         }
     }
