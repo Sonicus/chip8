@@ -131,6 +131,7 @@ class CPU {
     //1NNN
     private void JMP(short address) {
         PC = address;
+        PC -= 2; //Since the cycle execution adds +2
     }
 
     //2NNN
