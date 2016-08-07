@@ -54,6 +54,9 @@ class CPU {
         switch (opcodeNibbles[0]) {
             case 0x0:
                 switch (CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3])) {
+                    case (byte) 0xE0:
+                        CLS();
+                        break;
                     case (byte) 0xEE:
                         RET();
                         break;
@@ -115,6 +118,11 @@ class CPU {
 
     private void unknownOpcode(short opcodeShort) {
         throw new RuntimeException("Unknown opcode " + String.format("%04X", opcodeShort));
+    }
+
+    //00E0
+    private void CLS() {
+        vMem = new int[64][32];
     }
 
     //00EE
