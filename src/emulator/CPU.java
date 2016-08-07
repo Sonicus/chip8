@@ -4,6 +4,7 @@ package emulator;
 import util.CpuUtil;
 
 import java.util.Stack;
+import java.util.stream.IntStream;
 
 class CPU {
 
@@ -73,6 +74,9 @@ class CPU {
                 switch (CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3])) {
                     case 0x33:
                         LDB(opcodeNibbles[1]);
+                        break;
+                    case 0x65:
+                        LDR(opcodeNibbles[1]);
                         break;
                     default:
                         unknownOpcode(opcodeShort);
@@ -157,6 +161,7 @@ class CPU {
         drawFlag = true;
     }
 
+    //FX33
     private void LDB(byte sourceRegister) {
         if (I + 2 > mem.length) {
             throw new RuntimeException("I value outside of memory range");
@@ -164,6 +169,15 @@ class CPU {
         mem[I] = (byte) (reg[sourceRegister] / 100);
         mem[I + 1] = (byte) ((reg[sourceRegister] % 100) / 10);
         mem[I + 2] = (byte) (reg[sourceRegister] % 10);
+    }
+
+    //FX65
+    private void LDR(byte targetRegister) {
+        if (I + targetRegister >= mem.length) {
+            throw new RuntimeException("I value outside of memory range");
+        }
+        IntStream.rangeClosed(0, targetRegister).forEach(index -> reg[index] = mem[I + index]);
+        I = (short) (I + targetRegister + 1);
     }
 
     private void initializeFont() {
