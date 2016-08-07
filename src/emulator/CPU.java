@@ -42,6 +42,9 @@ class CPU {
             case 0x6:
                 LD(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
                 break;
+            case 0x7:
+                ADDN(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
+                break;
             case 0xA:
                 LDI(CpuUtil.addressFromNibbles(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]));
                 break;
@@ -71,6 +74,11 @@ class CPU {
     //6XNN
     private void LD(byte targetRegister, byte value) {
         reg[targetRegister] = value;
+    }
+
+    //7XNN
+    private void ADDN(byte targetRegister, byte value) {
+        mem[targetRegister] = (byte) ((mem[targetRegister] + value) % 256);
     }
 
     //ANNN
