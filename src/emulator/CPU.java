@@ -44,6 +44,8 @@ class CPU {
             case 0x2:
                 CALL(CpuUtil.addressFromNibbles(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]));
                 break;
+            case 0x3:
+                SE_N(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
             case 0x6:
                 LD(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
                 break;
@@ -88,6 +90,13 @@ class CPU {
     private void CALL(short address) {
         STACK.push(PC);
         PC = address;
+    }
+
+    //3XNN
+    private void SE_N(byte sourceRegister, byte value) {
+        if (mem[sourceRegister] == value) {
+            PC += 2;
+        }
     }
 
     //6XNN
