@@ -72,6 +72,9 @@ class CPU {
                 break;
             case 0xF:
                 switch (CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3])) {
+                    case 0x29:
+                        LDF(opcodeNibbles[1]);
+                        break;
                     case 0x33:
                         LDB(opcodeNibbles[1]);
                         break;
@@ -159,6 +162,11 @@ class CPU {
         }
         reg[0xF] = collisionFlag;
         drawFlag = true;
+    }
+
+    //FX29
+    private void LDF(byte sourceRegister) {
+        I = (short) (reg[sourceRegister] * 5);
     }
 
     //FX33
