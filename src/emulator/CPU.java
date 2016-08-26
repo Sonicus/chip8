@@ -33,13 +33,7 @@ class CPU {
         drawFlag = false;
     }
 
-    void executeCycle() throws Exception {
-
-        //TODO! Make the system refresh rate adjustable. For now use the same as the DT and ST
-        if (System.nanoTime() < timerTickTime + timerRefreshRate) {
-            return;
-        }
-
+    void executeCycle() throws RuntimeException {
         cycleNumber++;
         if (System.nanoTime() > timerTickTime + timerRefreshRate) {
             DT = (byte) (Math.max(0, --DT));
