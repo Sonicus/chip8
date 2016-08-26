@@ -74,6 +74,7 @@ public class Main extends Application {
             cpu.executeCycle();
             if (cpu.isDrawFlag()) {
                 renderer.updateCanvas();
+                cpu.setDrawFlag(false);
             }
         }
     }

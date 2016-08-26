@@ -283,4 +283,8 @@ class CPU {
     public boolean isDrawFlag() {
         return drawFlag;
     }
+
+    public void setDrawFlag(boolean value) {
+        this.drawFlag = value;
+    }
 }
