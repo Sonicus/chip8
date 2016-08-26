@@ -8,20 +8,19 @@ import java.util.Stack;
 import java.util.stream.IntStream;
 
 class CPU {
-
     private long cycleNumber;
     private short PC;
-    private Stack<Short> STACK;
+    private final Stack<Short> STACK;
     private short I;
     private byte DT = 0x0;
     private byte ST = 0x0;
-    private double timerRefreshRate = 1000000000.0 / 60;
+    private final double timerRefreshRate = 1000000000.0 / 60;
     private long timerTickTime = 0;
-    private byte[] reg = new byte[16];
-    private byte[] mem = new byte[4096];
+    private final byte[] reg = new byte[16];
+    private final byte[] mem = new byte[4096];
     private int[][] vMem = new int[64][32];
     private boolean drawFlag;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     CPU(byte[] romData) {
         System.arraycopy(romData, 0, mem, 0x200, romData.length);

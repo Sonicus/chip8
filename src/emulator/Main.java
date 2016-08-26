@@ -20,7 +20,7 @@ public class Main extends Application {
 
     private CPU cpu;
     private Renderer renderer;
-    private int scale = 7;
+    private final int scale = 7;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -45,7 +45,7 @@ public class Main extends Application {
         run();
     }
 
-    private void run() throws Exception {
+    private void run() {
         Timeline gameLoop = new Timeline();
         gameLoop.setCycleCount(Timeline.INDEFINITE);
 

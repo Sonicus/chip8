@@ -4,9 +4,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 class Renderer {
-    private CPU cpu;
-    private GraphicsContext gc;
-    private int scale;
+    private final CPU cpu;
+    private final GraphicsContext gc;
+    private final int scale;
 
     Renderer(CPU cpu, GraphicsContext gc, int scale) {
         this.cpu = cpu;
@@ -21,7 +21,7 @@ class Renderer {
             for (int y = 0; y < 32; y++) {
                 Color color = vMem[x][y] == 1 ? Color.WHITE : Color.BLACK;
                 gc.setFill(color);
-                gc.fillRect(x * scale, y * scale, 1 * scale, 1 * scale);
+                gc.fillRect(x * scale, y * scale, scale, scale);
             }
         }
     }
