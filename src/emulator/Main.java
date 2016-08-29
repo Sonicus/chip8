@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -41,6 +42,10 @@ public class Main extends Application {
             e.printStackTrace();
             showAlert("Couldn't initialize emulator\n" + e.getClass(), e, Optional.empty(), Optional.empty());
         }
+
+        primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> cpu.keyPressed(event.getCode()));
+        primaryStage.addEventHandler(KeyEvent.KEY_RELEASED, event -> cpu.keyReleased(event.getCode()));
+
         primaryStage.show();
         run();
     }

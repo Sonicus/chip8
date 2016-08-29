@@ -1,8 +1,10 @@
 package emulator;
 
 
+import javafx.scene.input.KeyCode;
 import util.CpuUtil;
 
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Stack;
 import java.util.stream.IntStream;
@@ -21,6 +23,8 @@ class CPU {
     private int[][] vMem = new int[64][32];
     private boolean drawFlag;
     private final Random random = new Random();
+    private HashMap<KeyCode, Integer> buttonMap;
+    private boolean[] buttonStatus;
 
     CPU(byte[] romData) {
         System.arraycopy(romData, 0, mem, 0x200, romData.length);
@@ -30,6 +34,28 @@ class CPU {
         STACK = new Stack<>();
         cycleNumber = 0;
         drawFlag = false;
+        initializeButtons();
+    }
+
+    private void initializeButtons() {
+        buttonMap = new HashMap<>();
+        buttonMap.put(KeyCode.DIGIT1, 0x1);
+        buttonMap.put(KeyCode.DIGIT2, 0x2);
+        buttonMap.put(KeyCode.DIGIT3, 0x3);
+        buttonMap.put(KeyCode.DIGIT4, 0xC);
+        buttonMap.put(KeyCode.Q, 0x4);
+        buttonMap.put(KeyCode.W, 0x5);
+        buttonMap.put(KeyCode.E, 0x6);
+        buttonMap.put(KeyCode.R, 0xD);
+        buttonMap.put(KeyCode.A, 0x7);
+        buttonMap.put(KeyCode.S, 0x8);
+        buttonMap.put(KeyCode.D, 0x9);
+        buttonMap.put(KeyCode.F, 0xE);
+        buttonMap.put(KeyCode.Z, 0xA);
+        buttonMap.put(KeyCode.X, 0x0);
+        buttonMap.put(KeyCode.C, 0xB);
+        buttonMap.put(KeyCode.V, 0xF);
+        buttonStatus = new boolean[buttonMap.size()];
     }
 
     void executeCycle() throws RuntimeException {
@@ -279,5 +305,17 @@ class CPU {
 
     public void setDrawFlag(boolean value) {
         this.drawFlag = value;
+    }
+
+    public void keyPressed(KeyCode keyCode) {
+        if (buttonMap.containsKey(keyCode)) {
+            buttonStatus[buttonMap.get(keyCode)] = true;
+        }
+    }
+
+    public void keyReleased(KeyCode keyCode) {
+        if (buttonMap.containsKey(keyCode)) {
+            buttonStatus[buttonMap.get(keyCode)] = false;
+        }
     }
 }
