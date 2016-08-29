@@ -112,6 +112,15 @@ class CPU {
             case 0xD:
                 DRW(opcodeNibbles[1], opcodeNibbles[2], opcodeNibbles[3]);
                 break;
+            case 0xE:
+                switch (CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3])) {
+                    case (byte)0xA1:
+                        SKNP(opcodeNibbles[1]);
+                        break;
+                    default:
+                        unknownOpcode(opcodeShort);
+                }
+                break;
             case 0xF:
                 switch (CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3])) {
                     case 0x07:
@@ -225,6 +234,13 @@ class CPU {
         }
         reg[0xF] = collisionFlag;
         drawFlag = true;
+    }
+
+    //EXA1
+    private void SKNP(byte keyButton) {
+        if(!buttonStatus[keyButton]){
+            PC += 2;
+        }
     }
 
     //FX07
