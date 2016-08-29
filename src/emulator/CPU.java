@@ -194,7 +194,7 @@ class CPU {
                 if (vMem[screenXPos][screenYPos] == 1 && ((mem[I + j] >> (7 - i)) & 0b00000001) == 1) {
                     collisionFlag = 0x01;
                 }
-                vMem[screenXPos][screenYPos] = vMem[screenXPos][screenYPos] ^ (mem[I + j] >> i & 1);
+                vMem[screenXPos][screenYPos] = vMem[screenXPos][screenYPos] ^ (mem[I + j] >> (7 - i) & 1);
             }
         }
         reg[0xF] = collisionFlag;
