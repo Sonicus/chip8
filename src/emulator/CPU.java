@@ -293,8 +293,14 @@ public class CPU {
         byte collisionFlag = 0x00;
         for (int j = 0; j < n; j++) {
             int screenYPos = (j + y) % 32;
+            while (screenYPos < 0) {
+                screenYPos += 32;
+            }
             for (int i = 0; i < 8; i++) {
                 int screenXPos = (x + i) % 64;
+                while (screenXPos < 0) {
+                    screenXPos += 64;
+                }
                 if (vMem[screenXPos][screenYPos] == 1 && ((mem[I + j] >> (7 - i)) & 0b00000001) == 1) {
                     collisionFlag = 0x01;
                 }
