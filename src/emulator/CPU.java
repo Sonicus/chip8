@@ -170,12 +170,12 @@ class CPU {
     //00EE
     private void RET() {
         if (STACK.empty()) {
-            throw new RuntimeException("Tried to return from a subroutine but the stack is empty");
+            throw new RuntimeException("Stack underflow");
         }
         PC = STACK.pop();
         PC -= 2;
         if (PC < 0) {
-            throw new RuntimeException("Stack underflow");
+            throw new RuntimeException("PC is negative");
         }
     }
 
