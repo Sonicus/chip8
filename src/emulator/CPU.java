@@ -114,6 +114,9 @@ class CPU {
                     case 0x4:
                         ADD(opcodeNibbles[1], opcodeNibbles[2]);
                         break;
+                    case 0x5:
+                        SUB_R(opcodeNibbles[1], opcodeNibbles[2]);
+                        break;
                     default:
                         unknownOpcode(opcodeShort);
                 }
@@ -239,7 +242,12 @@ class CPU {
     private void ADD(byte regX, byte regY) {
         reg[0xF] = (byte) (reg[regX] + reg[regY] > 255 ? 0x01 : 0x00);
         reg[regX] = (byte) (reg[regX] + reg[regY] % 255);
-        return;
+    }
+
+    //8XY5
+    private void SUB_R(byte regX, byte regY) {
+        reg[0xF] = (byte) (reg[regX] < reg[regY] ? 0x00 : 0x01);
+        reg[regX] -= reg[regY];
     }
 
     //9XY0
