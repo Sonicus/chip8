@@ -3,18 +3,18 @@ package emulator;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-class Renderer {
+public class Renderer {
     private final CPU cpu;
     private final GraphicsContext gc;
     private final int scale;
 
-    Renderer(CPU cpu, GraphicsContext gc, int scale) {
+    public Renderer(CPU cpu, GraphicsContext gc, int scale) {
         this.cpu = cpu;
         this.gc = gc;
         this.scale = scale;
     }
 
-    void updateCanvas() {
+    public void updateCanvas() {
         int[][] vMem = cpu.getvMem();
 
         for (int x = 0; x < 64; x++) {

@@ -9,7 +9,7 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.stream.IntStream;
 
-class CPU {
+public class CPU {
     private long cycleNumber;
     private short PC;
     private final Stack<Short> STACK;
@@ -26,7 +26,7 @@ class CPU {
     private HashMap<KeyCode, Integer> buttonMap;
     private boolean[] buttonStatus;
 
-    CPU(byte[] romData) {
+    public CPU(byte[] romData) {
         System.arraycopy(romData, 0, mem, 0x200, romData.length);
         initializeFont();
         PC = 0x200;
@@ -361,11 +361,11 @@ class CPU {
         System.arraycopy(font, 0, mem, 0, font.length);
     }
 
-    long getCycleNumber() {
+    public long getCycleNumber() {
         return cycleNumber;
     }
 
-    short getPC() {
+    public short getPC() {
         return PC;
     }
 
