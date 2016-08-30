@@ -135,6 +135,9 @@ public class CPU {
                 break;
             case 0xE:
                 switch (CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3])) {
+                    case (byte) 0x9E:
+                        SKP(opcodeNibbles[1]);
+                        break;
                     case (byte) 0xA1:
                         SKNP(opcodeNibbles[1]);
                         break;
@@ -295,6 +298,13 @@ public class CPU {
     //EXA1
     private void SKNP(byte keyButton) {
         if (!buttonStatus[reg[keyButton]]) {
+            PC += 2;
+        }
+    }
+
+    //EX9E
+    private void SKP(byte keyButton) {
+        if (buttonStatus[reg[keyButton]]) {
             PC += 2;
         }
     }
