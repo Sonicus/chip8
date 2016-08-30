@@ -98,13 +98,16 @@ class CPU {
                 SNE_N(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
                 break;
             case 0x6:
-                LD(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
+                LD_N(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
                 break;
             case 0x7:
                 ADD_N(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
                 break;
             case 0x8:
                 switch (opcodeNibbles[3]) {
+                    case 0x0:
+                        LD_R(opcodeNibbles[1], opcodeNibbles[2]);
+                        break;
                     case 0x2:
                         AND(opcodeNibbles[1], opcodeNibbles[2]);
                         break;
@@ -213,13 +216,18 @@ class CPU {
     }
 
     //6XNN
-    private void LD(byte targetRegister, byte value) {
+    private void LD_N(byte targetRegister, byte value) {
         reg[targetRegister] = value;
     }
 
     //7XNN
     private void ADD_N(byte targetRegister, byte value) {
         reg[targetRegister] = (byte) ((reg[targetRegister] + value) % 256);
+    }
+
+    //8XY0
+    private void LD_R(byte targetRegister, byte sourceRegister) {
+        reg[targetRegister] = reg[sourceRegister];
     }
 
     //8XY2
