@@ -94,6 +94,9 @@ class CPU {
             case 0x3:
                 SE_N(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
                 break;
+            case 0x4:
+                SNE_N(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
+                break;
             case 0x6:
                 LD(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
                 break;
@@ -198,6 +201,13 @@ class CPU {
     //3XNN
     private void SE_N(byte sourceRegister, byte value) {
         if (reg[sourceRegister] == value) {
+            PC += 2;
+        }
+    }
+
+    //4XNN
+    private void SNE_N(byte sourceRegister, byte value) {
+        if (reg[sourceRegister] != value) {
             PC += 2;
         }
     }
