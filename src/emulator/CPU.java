@@ -100,6 +100,15 @@ class CPU {
             case 0x7:
                 ADD_N(opcodeNibbles[1], CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3]));
                 break;
+            case 0x8:
+                switch (opcodeNibbles[3]) {
+                    case 0x2:
+                        AND(opcodeNibbles[1], opcodeNibbles[2]);
+                        break;
+                    default:
+                        unknownOpcode(opcodeShort);
+                }
+                break;
             case 0x9:
                 SNE_R(opcodeNibbles[1], opcodeNibbles[2]);
                 break;
@@ -114,7 +123,7 @@ class CPU {
                 break;
             case 0xE:
                 switch (CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3])) {
-                    case (byte)0xA1:
+                    case (byte) 0xA1:
                         SKNP(opcodeNibbles[1]);
                         break;
                     default:
@@ -200,6 +209,11 @@ class CPU {
         reg[targetRegister] = (byte) ((reg[targetRegister] + value) % 256);
     }
 
+    //8XY2
+    private void AND(byte regX, byte regY) {
+        reg[regX] &= reg[regY];
+    }
+
     //9XY0
     private void SNE_R(byte regX, byte regY) {
         if (mem[regX] != mem[regY]) {
@@ -238,7 +252,7 @@ class CPU {
 
     //EXA1
     private void SKNP(byte keyButton) {
-        if(!buttonStatus[keyButton]){
+        if (!buttonStatus[keyButton]) {
             PC += 2;
         }
     }
