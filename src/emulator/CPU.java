@@ -369,6 +369,10 @@ class CPU {
         return PC;
     }
 
+    public byte getST() {
+        return ST;
+    }
+
     public int[][] getvMem() {
         return vMem;
     }

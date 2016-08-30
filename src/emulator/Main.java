@@ -10,17 +10,21 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import util.RomUtil;
 
+import java.nio.file.Paths;
 import java.util.Optional;
 
 public class Main extends Application {
 
     private CPU cpu;
     private Renderer renderer;
+    private MediaPlayer tonePlayer;
     private final int scale = 7;
 
     @Override
@@ -46,6 +50,8 @@ public class Main extends Application {
         primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> cpu.keyPressed(event.getCode()));
         primaryStage.addEventHandler(KeyEvent.KEY_RELEASED, event -> cpu.keyReleased(event.getCode()));
 
+        tonePlayer = new MediaPlayer(new Media(Paths.get("tone.mp3").toUri().toString()));
+
         primaryStage.show();
         run();
     }
@@ -55,7 +61,7 @@ public class Main extends Application {
         gameLoop.setCycleCount(Timeline.INDEFINITE);
 
         KeyFrame kf = new KeyFrame(
-                Duration.seconds(0.017),
+                Duration.seconds(0.009),
                 actionEvent -> {
                     try {
                         cpu.executeCycle();
@@ -68,6 +74,12 @@ public class Main extends Application {
                     if (cpu.isDrawFlag()) {
                         renderer.updateCanvas();
                         cpu.setDrawFlag(false);
+                    }
+
+                    if (cpu.getST() > 0x0) {
+                        tonePlayer.play();
+                    } else {
+                        tonePlayer.stop();
                     }
                 });
 
