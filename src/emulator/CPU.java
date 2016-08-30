@@ -288,7 +288,7 @@ class CPU {
 
     //EXA1
     private void SKNP(byte keyButton) {
-        if (!buttonStatus[keyButton]) {
+        if (!buttonStatus[reg[keyButton]]) {
             PC += 2;
         }
     }
