@@ -153,6 +153,9 @@ public class CPU {
                     case 0x18:
                         LDST(opcodeNibbles[1]);
                         break;
+                    case 0x1E:
+                        ADD_I(opcodeNibbles[1]);
+                        break;
                     case 0x29:
                         LDF(opcodeNibbles[1]);
                         break;
@@ -309,6 +312,11 @@ public class CPU {
     //FX18
     private void LDST(byte sourceRegister) {
         ST = reg[sourceRegister];
+    }
+
+    //FX1E
+    private void ADD_I(byte regX) {
+        I += reg[regX];
     }
 
     //FX29
