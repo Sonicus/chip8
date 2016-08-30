@@ -150,6 +150,9 @@ class CPU {
                     case 0x15:
                         LDDT(opcodeNibbles[1]);
                         break;
+                    case 0x18:
+                        LDST(opcodeNibbles[1]);
+                        break;
                     case 0x29:
                         LDF(opcodeNibbles[1]);
                         break;
@@ -301,6 +304,11 @@ class CPU {
     //FX15
     private void LDDT(byte sourceRegister) {
         DT = reg[sourceRegister];
+    }
+
+    //FX18
+    private void LDST(byte sourceRegister) {
+        ST = reg[sourceRegister];
     }
 
     //FX29
