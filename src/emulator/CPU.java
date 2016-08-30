@@ -25,6 +25,8 @@ public class CPU {
     private final Random random = new Random();
     private HashMap<KeyCode, Integer> buttonMap;
     private boolean[] buttonStatus;
+    private boolean waitingForKey;
+    private byte waitingForKeyReg;
 
     public CPU(byte[] romData) {
         System.arraycopy(romData, 0, mem, 0x200, romData.length);
@@ -56,6 +58,8 @@ public class CPU {
         buttonMap.put(KeyCode.C, 0xB);
         buttonMap.put(KeyCode.V, 0xF);
         buttonStatus = new boolean[buttonMap.size()];
+        waitingForKey = false;
+        waitingForKeyReg = 0x0;
     }
 
     void executeCycle() throws RuntimeException {
@@ -64,6 +68,9 @@ public class CPU {
             DT = (byte) (Math.max(0, --DT));
             ST = (byte) (Math.max(0, --ST));
             timerTickTime = System.nanoTime();
+        }
+        if (waitingForKey) {
+            return;
         }
         if (PC + 1 >= mem.length) {
             throw new RuntimeException("PC outside memory range");
@@ -149,6 +156,9 @@ public class CPU {
                 switch (CpuUtil.byteFromNibbles(opcodeNibbles[2], opcodeNibbles[3])) {
                     case 0x07:
                         LDRDT(opcodeNibbles[1]);
+                        break;
+                    case 0x0A:
+                        LDK(opcodeNibbles[1]);
                         break;
                     case 0x15:
                         LDDT(opcodeNibbles[1]);
@@ -314,6 +324,12 @@ public class CPU {
         reg[targetRegister] = DT;
     }
 
+    //FX0A
+    private void LDK(byte targetRegister) {
+        waitingForKey = true;
+        waitingForKeyReg = targetRegister;
+    }
+
     //FX15
     private void LDDT(byte sourceRegister) {
         DT = reg[sourceRegister];
@@ -406,6 +422,10 @@ public class CPU {
     public void keyPressed(KeyCode keyCode) {
         if (buttonMap.containsKey(keyCode)) {
             buttonStatus[buttonMap.get(keyCode)] = true;
+            if (waitingForKey) {
+                reg[waitingForKeyReg] = buttonMap.get(keyCode).byteValue();
+                waitingForKey = false;
+            }
         }
     }
 
