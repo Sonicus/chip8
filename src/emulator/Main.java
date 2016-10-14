@@ -50,7 +50,7 @@ public class Main extends Application {
         primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, event -> cpu.keyPressed(event.getCode()));
         primaryStage.addEventHandler(KeyEvent.KEY_RELEASED, event -> cpu.keyReleased(event.getCode()));
 
-        tonePlayer = new MediaPlayer(new Media(Paths.get("tone.mp3").toUri().toString()));
+        tonePlayer = new MediaPlayer(new Media(Paths.get("media/tone.mp3").toUri().toString()));
 
         primaryStage.show();
         run();
@@ -61,7 +61,7 @@ public class Main extends Application {
         gameLoop.setCycleCount(Timeline.INDEFINITE);
 
         KeyFrame kf = new KeyFrame(
-                Duration.seconds(0.009),
+                Duration.seconds(0.005),
                 actionEvent -> {
                     try {
                         cpu.executeCycle();
