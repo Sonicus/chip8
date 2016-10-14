@@ -1,5 +1,6 @@
 games/
 .idea/
+chip8.iml
 
 .DS_Store
 
